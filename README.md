@@ -16,8 +16,8 @@ A deterministic, command-driven 2D movement and world layer for Godot 4. Three f
 (top-down, thrust, mass-based blob), a spatial hash for thousands of entities,
 deterministic scatter fields, and `Vector2` replication specs.
 
-The 2D counterpart of [dot-fps-controller](../dot-fps-controller), and what
-[game-blob](../game-blob) is built on. Part of the [dot-*](../NOTES.md) family. Needs
+The 2D counterpart of [dot-fps-controller](https://github.com/modcommunity/dot-fps-controller), and what
+[game-hungario](https://github.com/modcommunity/game-hungario) is built on. Part of the [dot-*](https://github.com/modcommunity) family. Needs
 **dot-core** and nothing else.
 
 ## Install
