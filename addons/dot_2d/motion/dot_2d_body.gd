@@ -3,7 +3,7 @@ extends RefCounted
 
 ## What a 2D entity collides against.
 ##
-## The same abstraction dot-fps-controller's [code]DotFpsBody[/code] is, for the same
+## The same abstraction dot-player-controller's [code]DotFpsBody[/code] is, for the same
 ## reason: a headless server, a self-test and a deterministic replay all need to move
 ## against a world and only one of the three has a populated physics space.
 ##

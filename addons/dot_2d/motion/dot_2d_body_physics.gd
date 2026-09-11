@@ -83,7 +83,7 @@ func move(from: Vector2, motion: Vector2, radius: float) -> Hit:
 		return hit
 
 	# Stop a whisker short of the contact. Ending exactly touching is the failure
-	# dot-fps-controller documents at length: every subsequent query then reports the
+	# dot-player-controller documents at length: every subsequent query then reports the
 	# same contact and the entity is stuck against it.
 	hit.position = from + motion * maxf(0.0, safe - 0.001)
 	hit.blocked = true

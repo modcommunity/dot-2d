@@ -6,7 +6,7 @@ extends RefCounted
 ## [b]A pure function of its arguments.[/b] No device, no clock, no node, no
 ## randomness. Called with the same state, command and delta it produces the same
 ## result on every machine and on every replay — which is what makes a 2D game
-## predictable, and is the same contract dot-fps-controller's motor holds.
+## predictable, and is the same contract dot-player-controller's motor holds.
 ##
 ## The mode is on the tunables rather than in three motor classes because a game
 ## switching feels — a top-down character that boards a ship — should not swap the

@@ -3,7 +3,7 @@ extends RefCounted
 
 ## What a 2D player asked for on one tick.
 ##
-## The 2D counterpart of dot-fps-controller's [code]DotFpsCommand[/code], and separate
+## The 2D counterpart of dot-player-controller's [code]DotFpsCommand[/code], and separate
 ## from input sampling for the same reason: the simulation must be a pure function of
 ## these, so a client predicting a move and a server re-running it reach the same
 ## answer. Nothing in [Dot2DMotor] reads a device, a clock or a node.

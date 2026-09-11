@@ -3,7 +3,7 @@ extends RefCounted
 
 ## Everything about a 2D entity that the simulation reads and writes.
 ##
-## Kept apart from the node for the reason dot-fps-controller keeps
+## Kept apart from the node for the reason dot-player-controller keeps
 ## [code]DotFpsState[/code] apart: a state that lives on a [Node2D] cannot be
 ## snapshotted, rewound or replayed without touching the scene tree, and
 ## reconciliation does all three several times a second.
