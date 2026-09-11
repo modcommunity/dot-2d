@@ -12,18 +12,13 @@ This asset, along with all the others, was built initially with **Claude Code** 
 I intend on reviewing code, testing, and editing documentation regularly. If you're interested in helping out, please let me know!
 
 ## Deterministic 2D Movement and World
-A deterministic, command-driven 2D movement and world layer for Godot 4. Three feels
-(top-down, thrust, mass-based blob), a spatial hash for thousands of entities,
-deterministic scatter fields, and `Vector2` replication specs.
+A deterministic, command-driven 2D movement and world layer for Godot 4. Three feels (top-down, thrust, mass-based blob), a spatial hash for thousands of entities, deterministic scatter fields, and `Vector2` replication specs.
 
-The 2D counterpart of [dot-fps-controller](https://github.com/modcommunity/dot-fps-controller), and what
-[game-hungario](https://github.com/modcommunity/game-hungario) is built on. Part of the [dot-*](https://github.com/modcommunity) family. Needs
-**dot-core** and nothing else.
+The 2D counterpart of [dot-fps-controller](https://github.com/modcommunity/dot-fps-controller), and what [game-hungario](https://github.com/modcommunity/game-hungario) is built on. Part of the [dot-*](https://github.com/modcommunity) family. Needs **dot-core** and nothing else.
 
 ## Install
 
-Copy `addons/dot_2d/` and `addons/dot_core/` into your project and enable both in
-*Project → Project Settings → Plugins*.
+Copy `addons/dot_2d/` and `addons/dot_core/` into your project and enable both in *Project → Project Settings → Plugins*.
 
 ## Use
 
@@ -48,15 +43,9 @@ for id in arena.overlapping(state.position, state.radius, my_id):
 
 ## The idea
 
-**The simulation is a pure function of a `Dot2DCommand`.** No device, no clock, no
-node, no randomness. A client predicting a move, a server re-running it and a
-reconciliation replay all reach the same position — the same contract
-dot-fps-controller holds, in two dimensions.
+**The simulation is a pure function of a `Dot2DCommand`.** No device, no clock, no node, no randomness. A client predicting a move, a server re-running it and a reconciliation replay all reach the same position — the same contract dot-fps-controller holds, in two dimensions.
 
-The pointer is resolved to a **direction and a world-space distance** in the sampler,
-before it goes on the wire. A screen position is meaningless on a server that has no
-window and no camera, and that one decision is what makes an agar.io-like game
-predictable at all.
+The pointer is resolved to a **direction and a world-space distance** in the sampler, before it goes on the wire. A screen position is meaningless on a server that has no window and no camera, and that one decision is what makes an agar.io-like game predictable at all.
 
 ## What is in the box
 
@@ -78,25 +67,15 @@ predictable at all.
 
 ## The three relationships a blob game balances on
 
-`Dot2DMassRules` holds all three in one place, because they have to agree — a blob
-whose drawn radius and whose eat radius come from different formulas visibly overlaps
-things it cannot eat.
+`Dot2DMassRules` holds all three in one place, because they have to agree — a blob whose drawn radius and whose eat radius come from different formulas visibly overlaps things it cannot eat.
 
-- **Radius grows as mass^0.5.** Area is radius squared, so twice the mass is √2 the
-  width — which is what makes two small blobs equal to one big one.
-- **Speed falls as mass^-0.44, with a floor.** Without the floor, the biggest blob on
-  a long-running server is effectively stationary, which is not a challenge, it is a
-  player who has stopped playing.
-- **Eating needs a ratio *and* an overlap.** `can_eat` checks both in one call, because
-  a game that checks them separately eventually checks only one — and the one usually
-  forgotten is the distance, which is an eat at any range.
+- **Radius grows as mass^0.5.** Area is radius squared, so twice the mass is √2 the width — which is what makes two small blobs equal to one big one.
+- **Speed falls as mass^-0.44, with a floor.** Without the floor, the biggest blob on a long-running server is effectively stationary, which is not a challenge, it is a player who has stopped playing.
+- **Eating needs a ratio *and* an overlap.** `can_eat` checks both in one call, because a game that checks them separately eventually checks only one — and the one usually forgotten is the distance, which is an eat at any range.
 
 ## Why `Dot2DBodyFlat` is the production backend
 
-An agar.io world is a rectangle with nothing in it. A twin-stick arena is a rectangle
-with some pillars. Both are cheaper analytically than in the physics server, and both
-give **bit-identical answers on a client and a server** — which a physics query, whose
-result depends on solver state from previous steps, does not.
+An agar.io world is a rectangle with nothing in it. A twin-stick arena is a rectangle with some pillars. Both are cheaper analytically than in the physics server, and both give **bit-identical answers on a client and a server** — which a physics query, whose result depends on solver state from previous steps, does not.
 
 `Dot2DBodyPhysics` exists for unpredicted entities and single-player games, and says so.
 
