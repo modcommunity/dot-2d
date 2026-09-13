@@ -144,6 +144,29 @@ func _target_radius() -> float:
 	return 0.0
 
 
+## The world half-extent the viewport shows at the current zoom.
+##
+## [b]Divided by the zoom, not multiplied by it, and getting that backwards is invisible
+## in every assertion and glaring in a screenshot.[/b] Godot's [member Camera2D.zoom] is a
+## magnification: a zoom of 2 doubles the size of everything on screen and therefore
+## HALVES the world rectangle it covers. Multiplying was exactly wrong, and wrong by the
+## square of the zoom in area — which for a blob game is the one direction that matters,
+## because the zoom only leaves 1.0 when the player has grown.
+##
+## What it cost: [method visible_rect] is what interest management is checked against and
+## what a minimap and a renderer cull to, so a grown player was culled to a box a fraction
+## of their screen and watched most of the world stop being drawn. [method _clamp] read the
+## same number, so the camera was also allowed close enough to the wall to show the void
+## past it. Found by rendering a frame of a level and looking at it; no check in this addon
+## or in any game using it could see it.
+func _half_extent() -> Vector2:
+	# A zoom of zero is not reachable through the exported range and is reachable by
+	# assignment, and the failure mode of the division is an infinite rectangle.
+	return get_viewport_rect().size * 0.5 / Vector2(
+		maxf(absf(zoom.x), 0.001), maxf(absf(zoom.y), 0.001)
+	)
+
+
 ## Keeps the visible rectangle inside the arena.
 ##
 ## The half-extent depends on the zoom, which is why this runs after [method _zoom]:
@@ -158,7 +181,7 @@ func _clamp() -> void:
 	if bounds.size == Vector2.ZERO:
 		return
 
-	var half := get_viewport_rect().size * 0.5 * zoom
+	var half := _half_extent()
 
 	# A view wider than the world is centred rather than clamped to a negative range,
 	# which is the normal case for a small arena or a very zoomed-out blob.
@@ -178,7 +201,7 @@ func _clamp() -> void:
 ## The world rectangle currently visible. What interest management can be checked
 ## against, and what a minimap draws.
 func visible_rect() -> Rect2:
-	var half := get_viewport_rect().size * 0.5 * zoom
+	var half := _half_extent()
 	return Rect2(global_position - half, half * 2.0)
 
 
