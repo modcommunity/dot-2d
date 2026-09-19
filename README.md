@@ -14,7 +14,7 @@ I intend on reviewing code, testing, and editing documentation regularly. If you
 ## Deterministic 2D Movement and World
 A deterministic, command-driven 2D movement and world layer for Godot 4. Three feels (top-down, thrust, mass-based blob), a spatial hash for thousands of entities, deterministic scatter fields, and `Vector2` replication specs.
 
-The 2D counterpart of [dot-player-controller](https://github.com/modcommunity/dot-player-controller), and what [game-hungario](https://github.com/modcommunity/game-hungario) is built on. Part of the [dot-*](https://github.com/modcommunity) family. Needs **dot-core** and nothing else.
+The 2D counterpart of [dot-player-controller](https://github.com/modcommunity/dot-player-controller), and what [game-hungario](https://github.com/gamemann/game-hungario) is built on. Part of the [dot-*](https://github.com/modcommunity) family. Needs **dot-core** and nothing else.
 
 ## Install
 
