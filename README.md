@@ -90,3 +90,7 @@ godot --headless --path . res://examples/dot_2d_selftest.tscn
 ```
 
 138 checks, all offline. Exits non-zero on any failure.
+
+## Licence
+
+MIT. See [LICENSE](LICENSE).
