@@ -16,7 +16,8 @@ extends RefCounted
 ## clears half the field would otherwise place a thousand entities inside a single
 ## frame — and on a server that is a visible stall.
 
-const CHANNEL := "dot2d.scatter"
+# No log channel: a deterministic slot table. A refused take() is two clients claiming
+# one pellet, which is normal at any latency, and the caller holds the peer to name.
 
 ## Same masking discipline as [DotSpread] in dot-combat: GDScript integers are signed
 ## 64-bit and the published mixing constants are all above 2^63.

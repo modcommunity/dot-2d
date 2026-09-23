@@ -12,7 +12,8 @@ extends RefCounted
 ## switching feels — a top-down character that boards a ship — should not swap the
 ## object that owns the state.
 
-const CHANNEL := "dot2d.motor"
+# No log channel: a pure function of state, command and delta, run every tick on every
+# peer. It has nothing to fail against, and a line from it would be a line per tick.
 
 var tunables: Dot2DTunables = null
 

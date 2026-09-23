@@ -12,7 +12,9 @@ extends Node2D
 ## A process running a server and a client at once needs two arenas, and
 ## [member service_scope] is how they coexist.
 
-const CHANNEL := "dot2d.arena"
+# No log channel: a container of positions with nothing outside the process to fail
+# against. Its service registration is logged by DotRegistry, and the one silent path
+# it had -- a refused register() -- is a programmer error and says so with push_error.
 const SERVICE := &"dot_2d_arena"
 
 ## An entity was registered or forgotten.
@@ -105,6 +107,11 @@ func setup() -> DotResult:
 ## forgets, which is an entity nothing can see and which sees nothing, with no error.
 func register(id: int, state: Dot2DState) -> void:
 	if id == 0 or state == null:
+		# push_error rather than a quiet return: the caller is the bug, and the symptom is
+		# exactly the invisible entity described above, arriving with no stack to find it by.
+		push_error("Dot2DArena.register(%d) refused: %s." % [
+			id, "id 0 is reserved" if id == 0 else "the state is null"
+		])
 		return
 
 	_states[id] = state
