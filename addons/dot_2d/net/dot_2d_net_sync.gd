@@ -18,6 +18,7 @@ extends RefCounted
 ## var net_velocity: Vector2
 ## var net_mass: float
 ## var net_flags: int
+## var net_admin: int
 ##
 ## func _register_net_vars() -> void:
 ##     for spec in Dot2DNetSync.specs():
@@ -47,6 +48,10 @@ const VELOCITY_BITS := 14
 const MASS_BITS := 20
 const MASS_MAX := 1000000.0
 const FLAG_BITS := 16
+
+## [member Dot2DState.admin]. Five bits are used (see [Dot2DAdminModifiers]); eight leaves
+## room for a step or two without a wire change.
+const ADMIN_BITS := 8
 
 
 ## Position and velocity are `CUSTOM`, not a built-in type.
@@ -82,6 +87,16 @@ static func specs() -> Array[Dictionary]:
 			"property": &"net_flags",
 			"type": "UINT",
 			"bits": FLAG_BITS,
+			"interpolated": false,
+			"custom": false,
+		},
+		# An administrator's noclip, freeze and speed step. Replicated rather than kept on
+		# the server because the owning client's replay has to run them too, or a forced
+		# noclip is a player corrected back out of a wall on every snapshot.
+		{
+			"property": &"net_admin",
+			"type": "UINT",
+			"bits": ADMIN_BITS,
 			"interpolated": false,
 			"custom": false,
 		},
@@ -132,6 +147,7 @@ static func pull(state: Dot2DState, target: Object) -> void:
 		&"net_mass", clampi(int(round(state.mass)), 0, (1 << MASS_BITS) - 1)
 	)
 	target.set(&"net_flags", state.flags & ((1 << FLAG_BITS) - 1))
+	target.set(&"net_admin", state.admin & ((1 << ADMIN_BITS) - 1))
 
 
 ## Copies received state back into the simulation, on a peer that is not authoritative.
@@ -153,16 +169,23 @@ static func push(
 	state.mass = float(source.get(&"net_mass"))
 	state.flags = int(source.get(&"net_flags"))
 
+	# Read defensively: a behaviour written before `net_admin` existed has no such property,
+	# `get` answers null, and `int(null)` would abort the whole push — position included.
+	var admin: Variant = source.get(&"net_admin")
+
+	if admin != null:
+		state.admin = int(admin) & Dot2DAdminModifiers.ALL
+
 	if rules != null:
 		state.radius = rules.radius_for(state.mass)
 
 
 ## Bits one entity's full state costs. For a bandwidth estimate.
 ##
-## The number that decides whether a crowded world fits. At 104 bits an entity, the
-## hundred entities a client can see at once are about 1.3 kB a snapshot — which is
+## The number that decides whether a crowded world fits. At 112 bits an entity, the
+## hundred entities a client can see at once are about 1.4 kB a snapshot — which is
 ## why [member Dot2DConfig.max_interest_entities] exists, and why the position codec
 ## is 2D rather than dot-net's three-component one: paying for a Z that is always zero
 ## would add another 40%.
 static func estimated_bits() -> int:
-	return POSITION_BITS * 2 + VELOCITY_BITS * 2 + MASS_BITS + FLAG_BITS
+	return POSITION_BITS * 2 + VELOCITY_BITS * 2 + MASS_BITS + FLAG_BITS + ADMIN_BITS

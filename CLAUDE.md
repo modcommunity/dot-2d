@@ -150,6 +150,17 @@ places.
 `WORLD_EXTENT` must cover the arena and both peers must agree. Too small and distant
 entities wrap to the wrong place.
 
+## An administrator's noclip, freeze and speed are in the state
+
+`Dot2DAdminModifiers` is the 2D counterpart of dot-player-controller's `DotFpsAdminModifiers`, and it exists for the same reason: every one of the three is decided on the server and has to be *simulated* on the owning client, because that client predicts its own movement. A server that zeroed a velocity or skipped a collision on its own side only is simulating a player the client is not; the client's replay runs the ordinary motor, disagrees on every tick and is pulled back on every snapshot. The self-test keeps that as its negative control — the same replay with the bits stripped must land somewhere else, or the positive check could not have failed.
+
+- **A field, `Dot2DState.admin`, not bits in `flags`.** `flags` is the game's, all sixteen bits, and hungario already uses eight of them. The admin field is copied by `copy_from`, compared by `matches`, and replicated by `Dot2DNetSync` as `net_admin` (8 bits, five used). **A game's behaviour must declare `var net_admin: int`**; `push` reads it defensively so one that has not is still moved, but it will not predict an admin's change.
+- **The speed is a ladder**, the first-person one (`0.25 … 3`), because only an index travels. It scales acceleration with the top speed, so 2x is not a slide.
+- **Freeze runs after the mass.** Decay is the round's rule, not movement, so a frozen blob still shrinks; it does not move, turn or spend boost. Freeze wins over noclip.
+- **Noclip keeps the arena rectangle.** `Dot2DBody.move_through` passes every obstacle and `Dot2DBodyFlat` still clamps to `bounds`: outside it nothing is drawn, and past `WORLD_EXTENT` a position wraps. A game that resolves its own geometry after the motor (hungario's rocks, the lobby's furniture) skips that step when `is_noclipped` — **inside the function its client replays**, or the replay collides where the server did not.
+- **No gravity step**, because nothing in dot-2d has gravity.
+- **The state helpers work on the integer too** (`noclip_bits`, `speed_bits`, `adopt`), because a player who is several states at once — a monster made of pieces — is one value per player written into each piece.
+
 ## `Dot2DConfig` is an offer, not a requirement
 
 The nodes carry their own exports and work without it. `Dot2DConfig` is the layered
@@ -188,7 +199,7 @@ done
 godot --headless --path . res://examples/dot_2d_selftest.tscn
 ```
 
-138 checks, all offline. Exits non-zero on any failure.
+175 checks, all offline. Exits non-zero on any failure.
 
 **Run it after any change to the motor, the grid or the scatter.** The determinism
 check is the one that matters: it is the property every other guarantee in this addon

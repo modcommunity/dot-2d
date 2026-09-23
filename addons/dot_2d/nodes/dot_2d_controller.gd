@@ -321,7 +321,12 @@ func current_speed_limit() -> float:
 	if tunables.mass_rules != null:
 		limit *= tunables.mass_rules.speed_scale(state.mass)
 
-	return limit
+	# Frozen is zero, not the step: a HUD that shows a frozen player their usual top speed
+	# is telling them the controls are broken.
+	if Dot2DAdminModifiers.is_frozen(state):
+		return 0.0
+
+	return limit * Dot2DAdminModifiers.speed_of(state)
 
 
 func describe() -> Dictionary:
@@ -341,4 +346,5 @@ func describe_lines() -> PackedStringArray:
 		"position %.1f, %.1f" % [state.position.x, state.position.y],
 		"speed    %.1f of %.1f" % [state.speed(), current_speed_limit()],
 		"mass     %.1f  radius %.1f" % [state.mass, state.radius],
+		"admin    %s" % (", ".join(Dot2DAdminModifiers.words(state.admin)) if state.admin != 0 else "-"),
 	])

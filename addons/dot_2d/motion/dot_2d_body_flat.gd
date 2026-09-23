@@ -122,6 +122,11 @@ func reflect(velocity: Vector2, hit: Hit) -> Vector2:
 	return velocity.slide(hit.normal)
 
 
+## Through every obstacle, and still inside [member bounds].
+func move_through(from: Vector2, motion: Vector2, radius: float) -> Vector2:
+	return _clamp_to_bounds(from + motion, radius)
+
+
 func _clamp_to_bounds(at: Vector2, radius: float) -> Vector2:
 	if bounds.size == Vector2.ZERO:
 		return at

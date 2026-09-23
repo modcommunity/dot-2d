@@ -56,6 +56,7 @@ The pointer is resolved to a **direction and a world-space distance** in the sam
 | `Dot2DTunables` | How it moves. Top-down, thrust, or blob. |
 | `Dot2DMassRules` | How mass becomes size, speed and the right to eat somebody. |
 | `Dot2DMotor` | The simulation. Pure, deterministic, node-free. |
+| `Dot2DAdminModifiers` | An administrator's noclip, freeze and speed step, carried in the state so the owning client predicts them. |
 | `Dot2DBody` | What it collides against. `Flat` for a bounded arena, `Physics` for the rest. |
 | `Dot2DGrid` | A uniform spatial hash. Two thousand entities, local queries. |
 | `Dot2DScatter` | Pellet fields laid out from a seed, refilled on a per-tick budget. |
@@ -89,7 +90,7 @@ done
 godot --headless --path . res://examples/dot_2d_selftest.tscn
 ```
 
-138 checks, all offline. Exits non-zero on any failure.
+175 checks, all offline. Exits non-zero on any failure.
 
 ## Licence
 

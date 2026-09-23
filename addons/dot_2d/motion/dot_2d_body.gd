@@ -45,6 +45,16 @@ func move(
 	return hit
 
 
+## Moves a circle ignoring everything solid, but not out of the world. An administrator's
+## noclip.
+##
+## The default goes wherever it was told, which is right for a backend with no idea of a
+## world's edge. [Dot2DBodyFlat] keeps its bounds, because past them there is nothing
+## drawn and past [constant Dot2DNetSync.WORLD_EXTENT] a position wraps.
+func move_through(from: Vector2, motion: Vector2, _radius: float) -> Vector2:
+	return from + motion
+
+
 ## Whether a circle at [param at] overlaps anything solid.
 func overlaps(_at: Vector2, _radius: float) -> bool:
 	return false

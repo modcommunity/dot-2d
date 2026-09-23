@@ -30,6 +30,15 @@ var active: bool = true
 ## "invulnerable" go.
 var flags: int = 0
 
+## What an administrator has done to how this entity moves: noclip, freeze, a speed step.
+## [Dot2DAdminModifiers] owns the bits.
+##
+## In the state rather than on the server's side of a game because it has to be
+## [i]simulated[/i] on the owning client too: a rewind copies it, the motor reads it and
+## [Dot2DNetSync] replicates it, so a predicting client replays exactly what the server
+## ran. Apart from [member flags] because those are the game's, every bit of them.
+var admin: int = 0
+
 ## Tick this state was produced on, for reconciliation.
 var tick: int = 0
 
@@ -64,6 +73,7 @@ func copy_from(other: Dot2DState) -> void:
 	mass = other.mass
 	active = other.active
 	flags = other.flags
+	admin = other.admin
 	tick = other.tick
 
 
@@ -83,7 +93,7 @@ func matches(other: Dot2DState, tolerance: float = 0.05) -> bool:
 	if other == null:
 		return false
 
-	if active != other.active or flags != other.flags:
+	if active != other.active or flags != other.flags or admin != other.admin:
 		return false
 
 	if position.distance_squared_to(other.position) > tolerance * tolerance:
@@ -104,6 +114,7 @@ func describe() -> Dictionary:
 		"mass": mass,
 		"active": active,
 		"flags": flags,
+		"admin": Dot2DAdminModifiers.words(admin),
 		"tick": tick,
 	}
 

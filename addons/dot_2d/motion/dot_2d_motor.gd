@@ -47,6 +47,14 @@ func simulate(
 
 	_apply_mass(state, delta)
 
+	# An administrator's freeze: no move, no turn, no boost spent. After the mass, because
+	# decay is the round's rule rather than movement and a frozen blob still shrinks.
+	# The state carries it (see Dot2DAdminModifiers), so a predicting client stops on the
+	# same tick the server did rather than walking on until a snapshot drags it back.
+	if Dot2DAdminModifiers.bits_frozen(state.admin):
+		state.velocity = Vector2.ZERO
+		return
+
 	match tunables.mode:
 		Dot2DTunables.Mode.THRUST:
 			_simulate_thrust(state, command, delta)
@@ -84,7 +92,7 @@ func _speed_limit(state: Dot2DState, command: Dot2DCommand) -> float:
 	if command.is_pressed(Dot2DCommand.BUTTON_BOOST):
 		limit *= tunables.boost_multiplier
 
-	return limit
+	return limit * Dot2DAdminModifiers.bits_speed(state.admin)
 
 
 ## The direction the player wants to go, and how hard, from 0 to 1.
@@ -128,7 +136,10 @@ func _simulate_topdown(
 
 	# Turn authority: accelerating across the current velocity costs more than
 	# accelerating along it. Below 1 this is what makes momentum readable.
-	var rate := tunables.acceleration
+	# An admin's speed step scales the acceleration with the top speed, so a player on 2x
+	# reaches the new top speed in the same time they reached the old one; scaling only the
+	# top speed makes a fast player feel like one who is sliding.
+	var rate := tunables.acceleration * Dot2DAdminModifiers.bits_speed(state.admin)
 
 	if tunables.turn_authority < 1.0 and state.velocity.length_squared() > 0.001:
 		var alignment := state.velocity.normalized().dot(wish.normalized())
@@ -167,7 +178,8 @@ func _simulate_thrust(
 
 	if throttle > 0.0:
 		state.velocity += Vector2.from_angle(state.facing) \
-			* tunables.acceleration * throttle * delta
+			* tunables.acceleration * Dot2DAdminModifiers.bits_speed(state.admin) \
+			* throttle * delta
 	else:
 		_apply_friction(state, delta)
 
@@ -225,6 +237,12 @@ func _integrate(state: Dot2DState, delta: float) -> void:
 
 	if body == null:
 		state.position += motion
+		return
+
+	# An administrator's noclip: through everything solid, but not out of the world. See
+	# Dot2DAdminModifiers for why the bounds stay.
+	if Dot2DAdminModifiers.bits_noclip(state.admin):
+		state.position = body.move_through(state.position, motion, state.radius)
 		return
 
 	var hit := body.move(state.position, motion, state.radius)
