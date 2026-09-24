@@ -18,9 +18,17 @@ const STEP := 1.0 / 60.0
 
 const CHECKS := 175
 
+## Sections entered against sections that ran to their last line, and against this. A
+## runtime error inside a section aborts that function and nothing says so; a section that
+## bailed out early after a failed guard is counted as not finished on purpose. The CHECKS
+## total is the other half — see docs/testing.md.
+const SECTIONS := 18
+
 var _passed := 0
 var _failed := 0
 var _failures := PackedStringArray()
+var _entered := 0
+var _completed := 0
 
 
 func _ready() -> void:
@@ -57,6 +65,13 @@ func _run() -> void:
 	for line in _failures:
 		print("  FAIL  %s" % line)
 
+	print("%d of %d sections ran to their last line" % [_completed, _entered])
+	if _entered != SECTIONS or _completed != _entered:
+		print("ERROR: %d sections entered and %d completed, %d expected. One aborted or was skipped." % [
+			_entered, _completed, SECTIONS
+		])
+		get_tree().quit(1)
+		return
 	# The total the section counter cannot be. A runtime error inside a section aborts
 	# that function, and the counter is satisfied because the section had already
 	# announced itself. See docs/testing.md.
@@ -70,6 +85,16 @@ func _run() -> void:
 
 
 # --- Assertions ------------------------------------------------------------
+
+func _section(title: String) -> void:
+	_entered += 1
+	_group(title)
+
+
+## A section reached its last line. See [constant SECTIONS].
+func _done() -> void:
+	_completed += 1
+
 
 func _check(condition: bool, what: String, detail: String = "") -> bool:
 	if condition:
@@ -119,7 +144,7 @@ func _run_ticks(
 # --- Command ---------------------------------------------------------------
 
 func _test_command() -> void:
-	_group("command")
+	_section("command")
 
 	var command := Dot2DCommand.new()
 	command.set_button(Dot2DCommand.BUTTON_SPLIT, true)
@@ -169,10 +194,11 @@ func _test_command() -> void:
 
 	var copy := command.duplicate_command()
 	_check(copy.equals(command), "a command duplicates")
+	_done()
 
 
 func _test_state() -> void:
-	_group("state")
+	_section("state")
 
 	var state := Dot2DState.at(Vector2(10.0, 20.0), 5.0)
 	_check(state.position == Vector2(10.0, 20.0), "a state holds a position")
@@ -194,12 +220,13 @@ func _test_state() -> void:
 	copy.copy_from(state)
 	copy.flags = 8
 	_check(not copy.matches(state), "differing flags never match, whatever the tolerance")
+	_done()
 
 
 # --- Mass ------------------------------------------------------------------
 
 func _test_mass_rules() -> void:
-	_group("mass rules")
+	_section("mass rules")
 
 	var rules := Dot2DMassRules.agar()
 	_check(rules.validate().ok, "the default rules validate")
@@ -264,10 +291,11 @@ func _test_mass_rules() -> void:
 		not stuck.validate().ok,
 		"a speed floor of zero is refused for the same kind of reason"
 	)
+	_done()
 
 
 func _test_tunables() -> void:
-	_group("tunables")
+	_section("tunables")
 
 	_check(Dot2DTunables.topdown().validate().ok, "the top-down preset validates")
 	_check(Dot2DTunables.blob().validate().ok, "the blob preset validates")
@@ -290,12 +318,13 @@ func _test_tunables() -> void:
 		not degenerate.validate().ok,
 		"a dead zone past the full-speed distance is refused"
 	)
+	_done()
 
 
 # --- Body ------------------------------------------------------------------
 
 func _test_body_bounds() -> void:
-	_group("body: bounds")
+	_section("body: bounds")
 
 	var body := Dot2DBodyFlat.centred(Vector2(1000.0, 1000.0))
 
@@ -336,10 +365,11 @@ func _test_body_bounds() -> void:
 	sliding.restitution = 0.5
 	var bounced := sliding.reflect(Vector2(50.0, 50.0), into_wall)
 	_check(bounced.x < 0.0, "a bounce reverses it instead")
+	_done()
 
 
 func _test_body_obstacles() -> void:
-	_group("body: obstacles")
+	_section("body: obstacles")
 
 	var body := Dot2DBodyFlat.centred(Vector2(2000.0, 2000.0))
 	body.add_obstacle(Vector2(100.0, 0.0), 50.0)
@@ -363,12 +393,13 @@ func _test_body_obstacles() -> void:
 		"an entity exactly on an obstacle centre is still pushed out",
 		str(dead_centre.position)
 	)
+	_done()
 
 
 # --- Motor -----------------------------------------------------------------
 
 func _test_motor_topdown() -> void:
-	_group("motor: top-down")
+	_section("motor: top-down")
 
 	var tunables := Dot2DTunables.topdown()
 	tunables.max_speed = 300.0
@@ -413,10 +444,11 @@ func _test_motor_topdown() -> void:
 	var before := facing.facing
 	_run_ticks(motor, facing, Dot2DCommand.new(), 60)
 	_close(facing.facing, before, "and is left alone once stopped", 0.05)
+	_done()
 
 
 func _test_motor_blob() -> void:
-	_group("motor: blob")
+	_section("motor: blob")
 
 	var tunables := Dot2DTunables.blob()
 	tunables.max_speed = 400.0
@@ -476,10 +508,11 @@ func _test_motor_blob() -> void:
 	var first := instant.speed()
 	motor.simulate(instant, _aim_command(Vector2.RIGHT, 200.0), STEP, 1)
 	_close(instant.speed(), first, "a blob reaches its speed on the first tick", 0.5)
+	_done()
 
 
 func _test_motor_thrust() -> void:
-	_group("motor: thrust")
+	_section("motor: thrust")
 
 	var tunables := Dot2DTunables.thrust()
 	tunables.turn_rate = PI
@@ -500,10 +533,11 @@ func _test_motor_thrust() -> void:
 	_run_ticks(motor, state, thrust, 30)
 	_check(state.velocity.x > 0.0, "thrusting accelerates along the facing")
 	_check(absf(state.velocity.y) < 0.001, "and only along it")
+	_done()
 
 
 func _test_determinism() -> void:
-	_group("determinism")
+	_section("determinism")
 
 	var tunables := Dot2DTunables.blob()
 	var body := Dot2DBodyFlat.centred(Vector2(2000.0, 2000.0))
@@ -536,6 +570,7 @@ func _test_determinism() -> void:
 		altered.position != first.position,
 		"and a changed input somewhere in the middle changes the outcome"
 	)
+	_done()
 
 
 func _replay(
@@ -558,7 +593,7 @@ func _replay(
 # --- Grid ------------------------------------------------------------------
 
 func _test_grid() -> void:
-	_group("grid")
+	_section("grid")
 
 	var grid := Dot2DGrid.new(100.0)
 
@@ -620,10 +655,11 @@ func _test_grid() -> void:
 		"and a local query returns a handful rather than all of them",
 		str(sample.size())
 	)
+	_done()
 
 
 func _test_grid_overlap() -> void:
-	_group("grid: overlap")
+	_section("grid: overlap")
 
 	var grid := Dot2DGrid.new(100.0)
 
@@ -654,10 +690,11 @@ func _test_grid_overlap() -> void:
 		not grid.query_overlapping(Vector2.ZERO, 10.0, 1).has(3),
 		"and something genuinely far away is still not found"
 	)
+	_done()
 
 
 func _test_scatter() -> void:
-	_group("scatter")
+	_section("scatter")
 
 	var scatter := Dot2DScatter.over(
 		Rect2(Vector2(-500.0, -500.0), Vector2(1000.0, 1000.0)), 100, 12345
@@ -742,6 +779,7 @@ func _test_scatter() -> void:
 		into_grid.size() == scatter.alive_count(),
 		"a field populates a grid"
 	)
+	_done()
 
 
 # --- Arena -----------------------------------------------------------------
@@ -756,7 +794,7 @@ func _make_arena() -> Dot2DArena:
 
 
 func _test_arena() -> void:
-	_group("arena")
+	_section("arena")
 
 	var arena := _make_arena()
 
@@ -813,10 +851,11 @@ func _test_arena() -> void:
 
 	arena.queue_free()
 	remove_child(arena)
+	_done()
 
 
 func _test_interest() -> void:
-	_group("interest")
+	_section("interest")
 
 	var arena := _make_arena()
 	arena.interest_extent = Vector2(200.0, 200.0)
@@ -856,12 +895,13 @@ func _test_interest() -> void:
 
 	arena.queue_free()
 	remove_child(arena)
+	_done()
 
 
 # --- Controller ------------------------------------------------------------
 
 func _test_controller() -> void:
-	_group("controller")
+	_section("controller")
 
 	var arena := _make_arena()
 
@@ -976,6 +1016,7 @@ func _test_controller() -> void:
 	remove_child(controller)
 	arena.queue_free()
 	remove_child(arena)
+	_done()
 
 
 # --- Net sync --------------------------------------------------------------
@@ -1028,7 +1069,7 @@ class FakeWire extends RefCounted:
 
 
 func _test_net_sync() -> void:
-	_group("net sync")
+	_section("net sync")
 
 	var specs := Dot2DNetSync.specs()
 	_check(specs.size() == 5, "the bridge describes what replicates")
@@ -1098,6 +1139,7 @@ func _test_net_sync() -> void:
 	)
 
 	behaviour.free()
+	_done()
 
 
 # --- Admin modifiers ---------------------------------------------------------
@@ -1107,7 +1149,7 @@ func _test_net_sync() -> void:
 ## same place, which is what a predicting client does, and that the same replay WITHOUT
 ## the bits does not, or the first check proves nothing.
 func _test_admin() -> void:
-	_group("admin modifiers")
+	_section("admin modifiers")
 
 	var tunables := Dot2DTunables.topdown()
 	tunables.max_speed = 300.0
@@ -1293,3 +1335,4 @@ func _test_admin() -> void:
 
 	behaviour.free()
 	older.free()
+	_done()
