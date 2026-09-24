@@ -24,7 +24,10 @@ var _shape := CircleShape2D.new()
 
 
 static func for_world(world: World2D) -> Dot2DBodyPhysics:
-	var body := Dot2DBodyPhysics.new()
+	# Not this class's own name. A script that names itself in an expression, loaded after
+	# its base, cuts Godot 4.7.2's exit teardown short and leaks every script loaded before
+	# it. See docs/gdscript-hazards.md, "A script that names itself".
+	var body := new()
 	body.bind(world)
 	return body
 

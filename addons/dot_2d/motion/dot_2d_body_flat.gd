@@ -26,7 +26,10 @@ var restitution: float = 0.5
 
 
 static func in_bounds(rect: Rect2) -> Dot2DBodyFlat:
-	var body := Dot2DBodyFlat.new()
+	# Not this class's own name. A script that names itself in an expression, loaded after
+	# its base, cuts Godot 4.7.2's exit teardown short and leaks every script loaded before
+	# it. See docs/gdscript-hazards.md, "A script that names itself".
+	var body := new()
 	body.bounds = rect
 	return body
 
