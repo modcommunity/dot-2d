@@ -4,7 +4,7 @@ extends Dot2DBody
 ## An arena rectangle and a list of solid circles. Analytic, and exact.
 ##
 ## **This is the production backend for a bounded-arena game**, not a test stub. An
-## agar.io world is a rectangle with nothing in it; a twin-stick arena is a rectangle
+## cell-eating world is a rectangle with nothing in it; a twin-stick arena is a rectangle
 ## with some pillars. Both are cheaper and more predictable here than in the physics
 ## server, and both give the same answer on every machine — which is what makes the
 ## movement predictable at all.

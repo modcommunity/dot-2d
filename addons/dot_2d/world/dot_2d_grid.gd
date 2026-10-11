@@ -3,7 +3,7 @@ extends RefCounted
 
 ## A uniform spatial hash. What makes a world with thousands of entities possible.
 ##
-## [b]The single thing an agar.io-like game cannot do without.[/b] Two thousand pellets
+## [b]The single thing a cell-eating game cannot do without.[/b] Two thousand pellets
 ## and forty players is 80,000 pair tests per tick done naively, per tick, on the
 ## server. Bucketed by cell it is a few dozen — and, more importantly, it is a few
 ## dozen regardless of how big the world gets.

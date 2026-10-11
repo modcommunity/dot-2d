@@ -188,7 +188,7 @@ func _simulate_thrust(
 
 ## Blob movement: velocity is set outright, not accelerated toward.
 ##
-## In agar.io a cell is exactly as fast as its mass allows, immediately. Accelerating
+## In the cell-eating games a cell is exactly as fast as its mass allows, immediately. Accelerating
 ## toward that makes a small cell feel sluggish in exactly the situation it is supposed
 ## to be nimble, and it makes a split feel like a slide.
 func _simulate_blob(

@@ -8,7 +8,7 @@ extends Node
 ##
 ## Exits non-zero on any failure, so it works as a smoke test as-is.
 ##
-## The cases that matter most are the ones an agar.io-like game reaches within a
+## The cases that matter most are the ones a cell-eating game reaches within a
 ## minute: a blob that walks out of the world, a spatial hash that misses an overlap it
 ## should have found, a scatter field that lays out differently on two machines, and a
 ## client whose predicted move disagrees with the server's.
@@ -228,7 +228,7 @@ func _test_state() -> void:
 func _test_mass_rules() -> void:
 	_section("mass rules")
 
-	var rules := Dot2DMassRules.agar()
+	var rules := Dot2DMassRules.cell_eating()
 	_check(rules.validate().ok, "the default rules validate")
 
 	# The relationship the whole genre balances on: twice the mass is √2 the width, so
@@ -1099,7 +1099,7 @@ func _test_net_sync() -> void:
 	# disagree by a rounding error and put the eat radius and the drawn radius in
 	# different places.
 	var received := Dot2DState.new()
-	var rules := Dot2DMassRules.agar()
+	var rules := Dot2DMassRules.cell_eating()
 	Dot2DNetSync.push(behaviour, received, rules)
 
 	_check(received.position == state.position, "and comes back")
@@ -1201,7 +1201,7 @@ func _test_admin() -> void:
 	_check(held.position.y < 150.0, "and unfreezing gives the controls back", str(held.position))
 
 	# Blob mode reads the same bit: velocity is set outright there, and a freeze that only
-	# stopped the accelerating modes would be a freeze agar-likes walk out of.
+	# stopped the accelerating modes would be a freeze cell-eating games walk out of.
 	var blob_tunables := Dot2DTunables.blob()
 	var blob_motor := Dot2DMotor.with_tunables(blob_tunables)
 	var blob := Dot2DState.at(Vector2.ZERO, 10.0)

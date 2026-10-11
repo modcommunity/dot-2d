@@ -4,7 +4,7 @@ extends Resource
 
 ## How mass becomes size, speed and the right to eat somebody.
 ##
-## The three relationships an agar.io-like game is built out of, in one place, because
+## The three relationships a cell-eating game is built out of, in one place, because
 ## they have to agree: a blob whose drawn radius and whose eat radius come from
 ## different formulas is a blob that visibly overlaps something it cannot eat.
 ##
@@ -82,8 +82,15 @@ extends Resource
 @export_range(0.0, 300.0, 1.0) var merge_delay_sec: float = 15.0
 
 
-static func agar() -> Dot2DMassRules:
+## The cell-eating genre's relationships: the defaults, by name.
+static func cell_eating() -> Dot2DMassRules:
 	return Dot2DMassRules.new()
+
+
+## Deprecated: the old name for [method cell_eating], which named a commercial game. Kept
+## because game packs built against an older client shell call it; remove once none do.
+static func agar() -> Dot2DMassRules:
+	return cell_eating()
 
 
 ## Radius for a given mass.

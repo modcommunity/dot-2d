@@ -45,7 +45,7 @@ for id in arena.overlapping(state.position, state.radius, my_id):
 
 **The simulation is a pure function of a `Dot2DCommand`.** No device, no clock, no node, no randomness. A client predicting a move, a server re-running it and a reconciliation replay all reach the same position. It is the same contract dot-player-controller holds, in two dimensions.
 
-The pointer is resolved to a **direction and a world-space distance** in the sampler, before it goes on the wire. A screen position is meaningless on a server that has no window and no camera, and that one decision is what makes an agar.io-like game predictable at all.
+The pointer is resolved to a **direction and a world-space distance** in the sampler, before it goes on the wire. A screen position is meaningless on a server that has no window and no camera, and that one decision is what makes a cell-eating game predictable at all.
 
 ## What is in the box
 
@@ -76,7 +76,7 @@ The pointer is resolved to a **direction and a world-space distance** in the sam
 
 ## Why `Dot2DBodyFlat` is the production backend
 
-An agar.io world is a rectangle with nothing in it. A twin-stick arena is a rectangle with some pillars. Both are cheaper analytically than in the physics server, and both give **bit-identical answers on a client and a server**, which a physics query does not, because its result depends on solver state from earlier steps.
+A cell-eating world is a rectangle with nothing in it. A twin-stick arena is a rectangle with some pillars. Both are cheaper analytically than in the physics server, and both give **bit-identical answers on a client and a server**, which a physics query does not, because its result depends on solver state from earlier steps.
 
 `Dot2DBodyPhysics` exists for unpredicted entities and single-player games, and says so.
 

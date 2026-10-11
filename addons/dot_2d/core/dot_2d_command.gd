@@ -11,7 +11,7 @@ extends RefCounted
 ## [b][member aim] is a direction, not a screen position.[/b] A mouse position is
 ## meaningless on the server — it depends on a window size and a camera zoom the server
 ## does not have — so the client resolves it to a unit vector before it goes on the
-## wire. That is the whole reason an agar.io-like game is predictable at all.
+## wire. That is the whole reason a cell-eating game is predictable at all.
 
 const BUTTON_ACTION := 1 << 0
 const BUTTON_ALT := 1 << 1
@@ -27,7 +27,7 @@ const BUTTON_BITS := 8
 
 ## Movement intent, at most unit length. What a stick or WASD produces.
 ##
-## In a point-and-move game — agar.io, a twin-stick — this is unused and [member aim]
+## In a point-and-move game — a cell-eater, a twin-stick — this is unused and [member aim]
 ## drives movement instead; see [member Dot2DTunables.follow_aim].
 var move: Vector2 = Vector2.ZERO
 

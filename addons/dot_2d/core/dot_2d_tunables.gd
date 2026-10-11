@@ -14,7 +14,7 @@ enum Mode {
 	TOPDOWN,
 	## Thrust along the facing, turn separately, no friction. Asteroids, a spaceship.
 	THRUST,
-	## Move toward the pointer at a speed that falls as mass rises. agar.io, and every
+	## Move toward the pointer at a speed that falls as mass rises. the cell-eating games, and every
 	## game where getting bigger is a trade against getting slower.
 	BLOB,
 }
@@ -43,7 +43,7 @@ enum Mode {
 
 ## Move toward [member Dot2DCommand.aim] rather than [member Dot2DCommand.move].
 ##
-## What agar.io and a twin-stick with mouse aim want. Forced on in
+## What a cell-eating game and a twin-stick with mouse aim want. Forced on in
 ## [constant Mode.BLOB], because a blob game with WASD is a different game.
 @export var follow_aim: bool = false
 
@@ -97,13 +97,13 @@ static func blob() -> Dot2DTunables:
 	tunables.mode = Mode.BLOB
 	tunables.follow_aim = true
 	tunables.max_speed = 420.0
-	# Blobs do not accelerate. In agar.io the cell is exactly as fast as its mass
+	# Blobs do not accelerate. In the cell-eating games the cell is exactly as fast as its mass
 	# allows, immediately, and adding acceleration makes small cells feel sluggish
 	# in precisely the situation they are supposed to be nimble.
 	tunables.acceleration = 100000.0
 	tunables.friction = 100000.0
 	tunables.face_velocity = false
-	tunables.mass_rules = Dot2DMassRules.agar()
+	tunables.mass_rules = Dot2DMassRules.cell_eating()
 	return tunables
 
 

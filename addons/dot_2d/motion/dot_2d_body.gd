@@ -8,7 +8,7 @@ extends RefCounted
 ## against a world and only one of the three has a populated physics space.
 ##
 ## [Dot2DBodyFlat] — an arena rectangle and a list of circles — is not a fallback. It
-## is what an agar.io-like game actually collides against, and it gives bit-identical
+## is what a cell-eating game actually collides against, and it gives bit-identical
 ## answers on a client and a server, which a physics query does not.
 
 
