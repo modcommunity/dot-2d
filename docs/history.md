@@ -1,6 +1,6 @@
 # History
 
-Bugs worth recognising if they come back. The lessons that still apply are rules in [CLAUDE.md](../CLAUDE.md) and [design.md](design.md). Both scatter bugs are also in the family catalogue, [game-dev/docs/bugs-found.md](../../../docs/bugs-found.md).
+Bugs worth recognising if they come back. The lessons that still apply are rules in [CLAUDE.md](../CLAUDE.md) and [design.md](design.md). Both scatter bugs are also in the family catalogue, [docs/bugs-found.md](../../../docs/bugs-found.md).
 
 ## The hash returned half its range
 

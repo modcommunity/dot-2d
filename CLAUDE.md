@@ -29,7 +29,7 @@ Paths above, except `examples/`, are in `addons/dot_2d/`.
 
 ## Running and testing
 
-The family's two steps ([game-dev/CLAUDE.md](../../CLAUDE.md#validating-anything)), then `godot --headless --path . res://examples/dot_2d_selftest.tscn`. Run it after any change to the motor, the grid or the scatter: the determinism check is the property every other guarantee here depends on, and it is not visible by reading the code.
+The family's two steps ([family CLAUDE.md](../../CLAUDE.md#validating-anything)), then `godot --headless --path . res://examples/dot_2d_selftest.tscn`. Run it after any change to the motor, the grid or the scatter: the determinism check is the property every other guarantee here depends on, and it is not visible by reading the code.
 
 ## Rules that bite
 
