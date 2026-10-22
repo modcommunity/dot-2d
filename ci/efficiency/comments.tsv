@@ -1,0 +1,26 @@
+# comments
+# Baselines only shrink: scripts/<gate> --update lowers or drops entries and refuses to add.
+addons/dot_2d/core/dot_2d_admin_modifiers.gd::banner	2
+addons/dot_2d/core/dot_2d_admin_modifiers.gd::long_block	4
+addons/dot_2d/core/dot_2d_command.gd::long_block	6
+addons/dot_2d/core/dot_2d_mass_rules.gd::long_block	8
+addons/dot_2d/core/dot_2d_state.gd::long_block	3
+addons/dot_2d/core/dot_2d_tunables.gd::long_block	3
+addons/dot_2d/dot_2d_config.gd::long_block	4
+addons/dot_2d/dot_2d_plugin.gd::long_block	1
+addons/dot_2d/motion/dot_2d_body.gd::long_block	3
+addons/dot_2d/motion/dot_2d_body_flat.gd::long_block	3
+addons/dot_2d/motion/dot_2d_body_physics.gd::long_block	2
+addons/dot_2d/motion/dot_2d_motor.gd::long_block	8
+addons/dot_2d/net/dot_2d_net_sync.gd::long_block	7
+addons/dot_2d/nodes/dot_2d_camera_rig.gd::history	1
+addons/dot_2d/nodes/dot_2d_camera_rig.gd::long_block	5
+addons/dot_2d/nodes/dot_2d_controller.gd::banner	1
+addons/dot_2d/nodes/dot_2d_controller.gd::long_block	3
+addons/dot_2d/nodes/dot_2d_sampler.gd::long_block	4
+addons/dot_2d/world/dot_2d_arena.gd::banner	1
+addons/dot_2d/world/dot_2d_arena.gd::long_block	6
+addons/dot_2d/world/dot_2d_grid.gd::long_block	7
+addons/dot_2d/world/dot_2d_scatter.gd::long_block	8
+examples/dot_2d_selftest.gd::banner	11
+examples/dot_2d_selftest.gd::long_block	4
