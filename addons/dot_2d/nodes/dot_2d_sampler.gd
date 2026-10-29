@@ -73,6 +73,8 @@ func _ready() -> void:
 
 	if _origin == null:
 		_origin = get_parent() as Node2D
+	if _origin == null and use_pointer:
+		DotLog.warn(CHANNEL, "no Node2D origin; aim falls back to the movement direction")
 
 
 func _register_defaults() -> void:

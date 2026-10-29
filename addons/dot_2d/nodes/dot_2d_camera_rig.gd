@@ -83,6 +83,8 @@ func follow(node: Node2D) -> void:
 
 	if node != null:
 		global_position = node.global_position
+	else:
+		DotLog.debug(CHANNEL, "camera follow cleared; it holds its position")
 
 
 func bind_arena(arena: Dot2DArena) -> void:
