@@ -132,3 +132,17 @@ func _test_net_sync() -> void:
 ## does its thing on one machine — it is that a replay from a rewound copy reaches the
 ## same place, which is what a predicting client does, and that the same replay WITHOUT
 ## the bits does not, or the first check proves nothing.
+
+
+func _test_command_neutralise() -> void:
+	_section("command neutralise")
+	var command := Dot2DCommand.new()
+	command.move = Vector2(1.0, 0.0)
+	command.aim = Vector2(0.0, 1.0)
+	command.reach = 300.0
+	command.set_button(Dot2DCommand.BUTTON_SPLIT, true)
+	command.neutralise()
+	_check(command.move == Vector2.ZERO and command.reach == 0.0 and command.buttons == 0,
+		"neutralise stops the move, the reach and the buttons")
+	_check(command.aim == Vector2(0.0, 1.0), "and keeps where it points")
+	_done()

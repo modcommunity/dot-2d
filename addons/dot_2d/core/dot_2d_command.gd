@@ -69,6 +69,15 @@ func just_pressed(button: int, previous: Dot2DCommand) -> bool:
 	return (pressed_since(previous) & button) != 0
 
 
+## Clears what this command would make happen, keeps where it points: given to a silent or
+## blacked-out player ([code]DotNetInput._neutralise[/code] calls this on its members).
+## Move, reach (the speed in pointer mode) and every button go; [member aim] stays.
+func neutralise() -> void:
+	move = Vector2.ZERO
+	reach = 0.0
+	buttons = 0
+
+
 func duplicate_command() -> Dot2DCommand:
 	var copy := Dot2DCommand.new()
 	copy.move = move

@@ -13,13 +13,13 @@ extends "res://examples/dot_2d_selftest_net.gd"
 ## should have found, a scatter field that lays out differently on two machines, and a
 ## client whose predicted move disagrees with the server's.
 
-const CHECKS := 175
+const CHECKS := 177
 
 ## Sections entered against sections that ran to their last line, and against this. A
 ## runtime error inside a section aborts that function and nothing says so; a section that
 ## bailed out early after a failed guard is counted as not finished on purpose. The CHECKS
 ## total is the other half — see docs/testing.md.
-const SECTIONS := 18
+const SECTIONS := 19
 
 
 func _ready() -> void:
@@ -48,6 +48,7 @@ func _run() -> void:
 	_test_interest()
 	_test_controller()
 	_test_net_sync()
+	_test_command_neutralise()
 	_test_admin()
 
 	print("")
